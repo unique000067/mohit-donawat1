@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohit Ultra Pro Calculator</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ============================ Global Reset ============================ */
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
+body { background: #0a0f1a; color:#e0e0e0; overflow-x:hidden; }
+/* ============================ Header ============================ */
+header#app-header { position:sticky; top:0; width:100%; background:#10172b; display:flex; align-items:center; padding:0.6rem 1rem; box-shadow:0 2px 10px rgba(0,0,0,0.6); z-index:1000; }
+.logo-container { display:flex; align-items:center; gap:0.8rem; }
+.logo-container img.logo { width:50px; height:50px; border-radius:8px; }
+.app-info h1 { font-size:1.5rem; color:#00d4ff; }
+.app-info span { font-size:0.85rem; color:#a0a0a0; }
+.app-info a { color:#ff8c00; text-decoration:none; }
+/* ============================ Layout ============================ */
+#main-container { display:flex; min-height:calc(100vh - 70px); }
+/* ============================ Sidebar ============================ */
+#sidebar { width:250px; background:#141c38; padding:1rem 0; display:flex; flex-direction:column; position:sticky; top:70px; height:calc(100vh - 70px); transition:width 0.3s ease; overflow-y:auto; }
+#sidebar ul { list-style:none; }
+#sidebar ul li { padding:0.8rem 1.5rem; cursor:pointer; display:flex; align-items:center; gap:0.5rem; color:#c0c0c0; transition: all 0.3s; border-left:3px solid transparent; }
+#sidebar ul li:hover { background:#1e2a4d; border-left:3px solid #00d4ff; color:#fff; }
+#sidebar ul li.active { background:#1e2a4d; border-left:3px solid #ff8c00; color:#fff; }
+/* ============================ Content ============================ */
+#content { flex:1; padding:1.5rem; display:flex; flex-direction:column; gap:1.5rem; }
+/* ============================ Category Header ============================ */
+#category-header { display:flex; flex-direction:column; gap:0.5rem; }
+#category-header h2 { font-size:2rem; color:#00d4ff; }
+#category-header .category-description { color:#a0a0a0; font-size:0.95rem; }
+/* ============================ Calculation Cards ============================ */
+.calc-card { background:rgba(20,28,56,0.85); border-radius:12px; padding:1rem; box-shadow:0 4px 20px rgba(0,0,0,0.5); transition: all 0.3s; backdrop-filter: blur(6px); }
+.calc-card:hover { transform:translateY(-3px); box-shadow:0 6px 25px rgba(0,0,0,0.7); }
+.calc-card h3 { color:#ff8c00; margin-bottom:0.8rem; font-size:1.3rem; }
+.calc-body { display:flex; flex-direction:column; gap:0.5rem; }
+.calc-body label { font-size:0.9rem; color:#00d4ff; }
+.calc-body input, .calc-body select { padding:0.4rem 0.6rem; border-radius:6px; border:none; outline:none; background:#0a0f1a; color:#fff; border:1px solid #00d4ff; transition:0.3s; }
+.calc-body input:focus, .calc-body select:focus { border-color:#ff8c00; box-shadow:0 0 8px rgba(255,140,0,0.5); }
+.calc-body button { padding:0.5rem 0.8rem; border:none; border-radius:6px; cursor:pointer; font-weight:bold; background:#00d4ff; color:#0a0f1a; transition:0.3s; box-shadow:0 3px 8px rgba(0,212,255,0.4); }
+.calc-body button:hover { background:#ff8c00; color:#fff; box-shadow:0 4px 15px rgba(255,140,0,0.6); }
+.calc-output { background:#0a0f1a; border:1px solid #00d4ff; border-radius:6px; padding:0.5rem; margin-top:0.5rem; font-size:0.85rem; overflow:auto; max-height:180px; }
+/* ============================ Graphs ============================ */
+canvas { background:#0a0f1a; border-radius:12px; }
+/* ============================ Footer ============================ */
+footer { width:100%; text-align:center; padding:1rem 0; background:#10172b; color:#888; font-size:0.8rem; box-shadow:0 -2px 10px rgba(0,0,0,0.5); }
+/* ============================ Tabs / Accordion ============================ */
+.tab-container { display:flex; gap:1rem; margin-bottom:1rem; }
+.tab-container button { padding:0.5rem 1rem; border:none; border-radius:8px; background:#1e2a4d; color:#fff; cursor:pointer; transition:0.3s; }
+.tab-container button.active { background:#ff8c00; color:#fff; box-shadow:0 4px 10px rgba(255,140,0,0.5); }
+.accordion { background:#141c38; border-radius:8px; padding:0.5rem; cursor:pointer; transition:0.3s; margin-bottom:0.3rem; }
+.accordion:hover { background:#1e2a4d; }
+.accordion-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; padding-left:0.5rem; }
+/* ============================ Scrollbar ============================ */
+#sidebar::-webkit-scrollbar { width:6px; }
+#sidebar::-webkit-scrollbar-track { background:#141c38; }
+#sidebar::-webkit-scrollbar-thumb { background:#00d4ff; border-radius:3px; }
+/* ============================ Responsive ============================ */
+@media(max-width:1024px){ #sidebar{width:200px;} }
+@media(max-width:768px){ #main-container{flex-direction:column;} #sidebar{width:100%; height:auto; display:flex; flex-direction:row; overflow-x:auto; padding:0.5rem;} #sidebar ul{display:flex; flex-direction:row; gap:0.3rem;} #sidebar ul li{flex:1;} }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header id="app-header">
+    <div class="logo-container">
+        <img src="mohit.png" alt="Mohit Logo" class="logo">
+        <div class="app-info">
+            <h1>Mohit Ultra Pro Calculator</h1>
+            <span>By Mohit Donawat | <a href="https://instagram.com/mohit.donawat" target="_blank">@mohit.donawat</a></span>
+        </div>
+    </div>
+</header>
+
+<!-- Main Layout -->
+<div id="main-container">
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+        <ul>
+            <li data-category="general" class="active">🌍 General</li>
+            <li data-category="science">🔬 Science</li>
+            <li data-category="commerce">💰 Commerce</li>
+            <li data-category="tech">💻 Tech / Coding</li>
+        </ul>
+    </nav>
+
+<!-- Main Content -->
+<main id="content">
+<!-- Category Header -->
+<section id="category-header">
+<h2 id="category-title">General Calculations</h2>
+<div class="category-description">All general calculations, time, age, units, currency, etc.</div>
+</section>
+
+<!-- Calculation Dashboard -->
+<section id="calc-dashboard">
+
+<!-- Time Calculations -->
+<div class="calc-card" data-subcategory="time">
+<h3>World Time & Meeting Planner</h3>
+<div class="calc-body">
+<label for="meetBase">Base Timezone:</label>
+<input type="text" id="meetBase" placeholder="Asia/Kolkata">
+<label for="meetTime">Time (HH:MM):</label>
+<input type="time" id="meetTime">
+<label for="meetZones">Target Zones (comma separated):</label>
+<input type="text" id="meetZones" placeholder="America/New_York, Europe/London">
+<button onclick="meetingPlanner()">Calculate</button>
+<pre id="meetOut" class="calc-output"></pre>
+</div>
+</div>
+
+<!-- Age & Date Calculations -->
+<div class="calc-card" data-subcategory="age">
+<h3>Age / Date Calculator</h3>
+<div class="calc-body">
+<label for="dob">Date of Birth:</label>
+<input type="date" id="dob">
+<label for="futureDate">Future Date (optional):</label>
+<input type="date" id="futureDate">
+<button onclick="calcAge()">Calculate Age</button>
+<button onclick="futureAge()">Calculate Future Age</button>
+<pre id="ageOut" class="calc-output"></pre>
+</div>
+</div>
+
+<!-- Units Conversion -->
+<div class="calc-card" data-subcategory="units">
+<h3>Units Conversion</h3>
+<div class="calc-body">
+<label for="unitCategory">Category:</label>
+<select id="unitCategory"></select>
+<label for="unitValue">Value:</label>
+<input type="number" id="unitValue" placeholder="Enter value">
+<label for="unitFrom">From:</label>
+<select id="unitFrom"></select>
+<label for="unitTo">To:</label>
+<select id="unitTo"></select>
+<button onclick="convertUnit()">Convert</button>
+<button onclick="swapUnits()">Swap</button>
+<pre id="unitOut" class="calc-output"></pre>
+</div>
+</div>
+
+<!-- Graph Placeholder -->
+<div class="calc-card" data-subcategory="graph">
+<h3>Interactive Graphs</h3>
+<canvas id="graphCanvas"></canvas>
+<button onclick="generateGraph()">Generate Graph</button>
+</div>
+
+<!-- Export / Import Hub -->
+<div class="calc-card" data-subcategory="export">
+<h3>Export / Import Hub</h3>
+<div class="calc-body">
+<button onclick="exportTimeHistoryJSON()">Export Time History JSON</button>
+<button onclick="exportTimeHistoryCSV()">Export Time History CSV</button>
+<input type="file" id="importTimeFile" onchange="importTimeFile(event)">
+<button onclick="printTimeHistory()">Print Time History</button>
+</div>
+</div>
+
+<!-- Placeholder for 50+ calculations per category -->
+<div class="calc-card" data-subcategory="placeholder">
+<h3>More Calculations Coming...</h3>
+<p>This area will hold additional 50+ calculations per category (Science, Commerce, Tech, General).</p>
+</div>
+
+</section>
+</main>
+</div>
+
+<!-- Footer -->
+<footer>
+<p>&copy; 2026 Mohit Ultra Pro Calculator | All rights reserved | Timestamp included in exports</p>
+</footer>
+
+<script src="js/utils.js"></script>
+<script src="js/history.js"></script>
+<script src="js/calculations.js"></script>
+<script src="js/graphs.js"></script>
+<script src="js/exportHub.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+// Sidebar active category switch
+document.querySelectorAll('#sidebar ul li').forEach(li=>{
+li.addEventListener('click',()=>{document.querySelector('#sidebar ul li.active').classList.remove('active'); li.classList.add('active'); document.getElementById('category-title').textContent = li.textContent;});
+});
+</script>
+</body>
+</html>

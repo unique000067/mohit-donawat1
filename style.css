@@ -1,0 +1,201 @@
+/* ============================================= */
+/* Mohit Ultra Pro Calculator - Mega Modern CSS */
+/* ============================================= */
+
+/* ============================ Global Reset ============================ */
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
+body { background:#0a0f1a; color:#e0e0e0; overflow-x:hidden; line-height:1.4; }
+a { text-decoration:none; color:inherit; }
+ul { list-style:none; }
+button { font-family:inherit; }
+
+/* ============================ Variables ============================ */
+:root {
+    --primary-bg:#0a0f1a;
+    --secondary-bg:rgba(20,28,56,0.85);
+    --accent-color:#00d4ff;
+    --accent-alt:#ff8c00;
+    --text-color:#e0e0e0;
+    --text-muted:#a0a0a0;
+    --card-radius:12px;
+    --transition-speed:0.3s;
+}
+
+/* ============================ Scrollbar ============================ */
+body::-webkit-scrollbar { width:8px; }
+body::-webkit-scrollbar-track { background:#0a0f1a; }
+body::-webkit-scrollbar-thumb { background:#00d4ff; border-radius:4px; }
+
+/* ============================ Header ============================ */
+header#app-header {
+    position:sticky;
+    top:0;
+    width:100%;
+    background:linear-gradient(90deg,#10172b,#141c38);
+    display:flex;
+    align-items:center;
+    padding:0.6rem 1.2rem;
+    box-shadow:0 2px 15px rgba(0,0,0,0.7);
+    z-index:1000;
+}
+.logo-container { display:flex; align-items:center; gap:0.8rem; }
+.logo-container img.logo { width:50px; height:50px; border-radius:10px; border:2px solid var(--accent-color); }
+.app-info h1 { font-size:1.6rem; color:var(--accent-color); text-shadow:0 0 5px var(--accent-color); }
+.app-info span { font-size:0.9rem; color:var(--text-muted); }
+.app-info a { color:var(--accent-alt); font-weight:bold; }
+
+/* ============================ Main Layout ============================ */
+#main-container { display:flex; min-height:calc(100vh - 70px); background:var(--primary-bg); }
+
+/* ============================ Sidebar ============================ */
+#sidebar {
+    width:250px;
+    background:#141c38;
+    padding:1rem 0;
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:70px;
+    height:calc(100vh - 70px);
+    transition:width var(--transition-speed) ease;
+    overflow-y:auto;
+}
+#sidebar ul li {
+    padding:0.8rem 1.5rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    color:var(--text-muted);
+    transition: all var(--transition-speed);
+    border-left:3px solid transparent;
+    font-weight:500;
+    border-radius:6px 0 0 6px;
+}
+#sidebar ul li:hover { background:#1e2a4d; border-left:3px solid var(--accent-color); color:#fff; }
+#sidebar ul li.active { background:#1e2a4d; border-left:3px solid var(--accent-alt); color:#fff; }
+
+/* ============================ Content ============================ */
+#content { flex:1; padding:1.5rem; display:flex; flex-direction:column; gap:1.5rem; }
+
+/* ============================ Category Header ============================ */
+#category-header { display:flex; flex-direction:column; gap:0.4rem; }
+#category-header h2 { font-size:2.1rem; color:var(--accent-color); text-shadow:0 0 8px var(--accent-color); }
+#category-header .category-description { color:var(--text-muted); font-size:0.95rem; }
+
+/* ============================ Calculation Cards ============================ */
+.calc-card {
+    background:var(--secondary-bg);
+    border-radius:var(--card-radius);
+    padding:1rem 1.2rem;
+    box-shadow:0 6px 20px rgba(0,0,0,0.5);
+    transition: all var(--transition-speed);
+    backdrop-filter: blur(8px);
+    border:1px solid rgba(0,212,255,0.2);
+}
+.calc-card:hover { transform:translateY(-3px); box-shadow:0 8px 25px rgba(0,0,0,0.7); }
+.calc-card h3 { color:var(--accent-alt); margin-bottom:0.8rem; font-size:1.35rem; text-shadow:0 0 5px var(--accent-alt); }
+.calc-body { display:flex; flex-direction:column; gap:0.6rem; }
+.calc-body label { font-size:0.9rem; color:var(--accent-color); }
+.calc-body input, .calc-body select {
+    padding:0.5rem 0.7rem;
+    border-radius:6px;
+    border:none;
+    outline:none;
+    background:var(--primary-bg);
+    color:#fff;
+    border:1px solid var(--accent-color);
+    transition:0.3s;
+}
+.calc-body input:focus, .calc-body select:focus { border-color:var(--accent-alt); box-shadow:0 0 8px rgba(255,140,0,0.5); }
+.calc-body button {
+    padding:0.55rem 0.8rem;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+    background:var(--accent-color);
+    color:var(--primary-bg);
+    transition:0.3s;
+    box-shadow:0 4px 10px rgba(0,212,255,0.4);
+}
+.calc-body button:hover { background:var(--accent-alt); color:#fff; box-shadow:0 5px 15px rgba(255,140,0,0.6); }
+.calc-output {
+    background:var(--primary-bg);
+    border:1px solid var(--accent-color);
+    border-radius:6px;
+    padding:0.6rem;
+    margin-top:0.5rem;
+    font-size:0.85rem;
+    overflow:auto;
+    max-height:200px;
+    color:#fff;
+}
+
+/* ============================ Graphs ============================ */
+canvas { background:var(--primary-bg); border-radius:12px; }
+
+/* ============================ Export / Import ============================ */
+#calc-dashboard .calc-card[data-subcategory="export"] button { margin-top:0.5rem; width:fit-content; }
+
+/* ============================ Tabs ============================ */
+.tab-container { display:flex; gap:1rem; margin-bottom:1rem; }
+.tab-container button { padding:0.5rem 1rem; border:none; border-radius:8px; background:#1e2a4d; color:#fff; cursor:pointer; transition:0.3s; box-shadow:0 3px 8px rgba(0,0,0,0.4); }
+.tab-container button.active { background:var(--accent-alt); color:#fff; box-shadow:0 4px 12px rgba(255,140,0,0.5); }
+
+/* ============================ Accordion ============================ */
+.accordion { background:#141c38; border-radius:8px; padding:0.6rem; cursor:pointer; transition:0.3s; margin-bottom:0.3rem; border:1px solid rgba(0,212,255,0.2); }
+.accordion:hover { background:#1e2a4d; }
+.accordion-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; padding-left:0.5rem; }
+
+/* ============================ Footer ============================ */
+footer {
+    width:100%;
+    text-align:center;
+    padding:1rem 0;
+    background:#10172b;
+    color:var(--text-muted);
+    font-size:0.8rem;
+    box-shadow:0 -2px 10px rgba(0,0,0,0.5);
+}
+
+/* ============================ Media Queries ============================ */
+@media(max-width:1024px){
+    #sidebar{width:200px;}
+}
+@media(max-width:768px){
+    #main-container{flex-direction:column;}
+    #sidebar{width:100%; height:auto; display:flex; flex-direction:row; overflow-x:auto; padding:0.5rem;}
+    #sidebar ul{display:flex; flex-direction:row; gap:0.3rem;}
+    #sidebar ul li{flex:1;}
+}
+
+/* ============================ Animations ============================ */
+@keyframes glow {
+    0% { box-shadow:0 0 5px var(--accent-color);}
+    50% { box-shadow:0 0 15px var(--accent-color);}
+    100% { box-shadow:0 0 5px var(--accent-color);}
+}
+button.glow { animation:glow 1.5s infinite; }
+
+/* ============================ Utility Classes ============================ */
+.text-center{ text-align:center; }
+.mb-1{ margin-bottom:1rem; }
+.mb-0-5{ margin-bottom:0.5rem; }
+.mb-2{ margin-bottom:2rem; }
+.p-1{ padding:1rem; }
+.p-0-5{ padding:0.5rem; }
+.flex{ display:flex; }
+.flex-center{ display:flex; justify-content:center; align-items:center; }
+.gap-1{ gap:1rem; }
+.rounded{ border-radius:var(--card-radius); }
+.hidden{ display:none; }
+
+/* ============================ Neon Highlights ============================ */
+.highlight-blue { color:#00d4ff; text-shadow:0 0 5px #00d4ff; }
+.highlight-orange { color:#ff8c00; text-shadow:0 0 5px #ff8c00; }
+.card-glow { box-shadow:0 0 15px #00d4ff inset, 0 0 25px #00d4ff; transition:0.4s; }
+.card-glow:hover { box-shadow:0 0 25px #ff8c00 inset, 0 0 35px #ff8c00; }
+
+/* ============================ More Placeholder CSS ============================ */
+/* This section can be extended to 1000+ lines with per-card specific styles, tabbed styles, accordion for 50+ calculations per category, hover effects, graphs styles, export hub styles, etc. */
